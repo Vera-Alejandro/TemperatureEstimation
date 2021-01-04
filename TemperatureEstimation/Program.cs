@@ -3,24 +3,30 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using TemperatureEstimation.DataStructure;
 
 namespace TemperatureEstimation
 {
     public class Program
     {
-        private static string BaseDatasetPath = @"../../../../Data";
-        private static string DatasetRelativePath = $"{BaseDatasetPath}/Product-sales.csv";
+        private static string BaseDatasetPath = @"../../../Data";
+        private static string DatasetRelativePath = $"{BaseDatasetPath}/dataset.csv";
         private static string DatasetPath = GetAbsolutePath(DatasetRelativePath);
-        private static string BaseModelsRelativePath = @"../../../../MLModels";
-        private static string ModelRelativePath1 = $"{BaseModelsRelativePath}/ProductSalesSpikeModel.zip";
-        private static string ModelRelativePath2 = $"{BaseModelsRelativePath}/ProductSalesChangePointModel.zip";
+        private static string BaseModelsRelativePath = @"../../../MLModels";
+        private static string dataPath = GetAbsolutePath(BaseDatasetPath);
+        private static string zipDataset = Path.Combine(dataPath, "input", "data.zip");
+        private static string fullDatasetPath = Path.Combine(dataPath, "input", "data", "alldata.csv");
+        private static string ModelRelativePath1 = $"{BaseModelsRelativePath}/SalesSpikeModel.zip";
+        private static string ModelRelativePath2 = $"{BaseModelsRelativePath}/SalesChangePointModel.zip";
         private static string SpikeModelPath = GetAbsolutePath(ModelRelativePath1);
         private static string ChangePointModelPath = GetAbsolutePath(ModelRelativePath2);
 
         static void Main(string[] args)
         {
             MLContext mlContext = new MLContext();
+
+            UnZipDataset(zipDataset, fullDatasetPath);
 
             const int size = 0; // to do determined. Don't know if I will be using this variable
 
@@ -35,6 +41,15 @@ namespace TemperatureEstimation
 
             Console.WriteLine("=============== End of process, hit any key to finish ===============");
             Console.ReadLine();
+        }
+
+        private static void UnZipDataset(string zipDataset, string destinationFile)
+        {
+            if (!File.Exists(destinationFile))
+            {
+                string destinationDir = Path.GetDirectoryName(destinationFile);
+                ZipFile.ExtractToDirectory(zipDataset, $"{destinationDir}");
+            }
         }
 
         private static void SaveModel(MLContext mlContext, ITransformer trainedModel, string modelPath, IDataView dataView)
