@@ -1,6 +1,6 @@
-﻿namespace TemperatureEstimation
+﻿namespace TemperatureEstimation.DataStructure
 {
-    internal class CityTempData
+    public class CityTempData
     {
     }
 }

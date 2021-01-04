@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TemperatureEstimation.DataStructure;
 
 namespace TemperatureEstimation
 {
@@ -25,9 +26,9 @@ namespace TemperatureEstimation
 
             IDataView dataView = mlContext.Data.LoadFromTextFile<CityTempData>(path: DatasetPath, hasHeader: true, separatorChar: ',');
 
-            ITransformer trainedSpikeModel = DetectSpike(size, dataView);
+            ITransformer trainedSpikeModel = DetectSpike(mlContext, size, dataView);
 
-            ITransformer trainedChangePointModel = DetectChangepoint(size, dataView);
+            ITransformer trainedChangePointModel = DetectChangepoint(mlContext, size, dataView);
 
             SaveModel(mlContext, trainedSpikeModel, ChangePointModelPath, dataView);
             SaveModel(mlContext, trainedChangePointModel, ChangePointModelPath, dataView);
@@ -45,14 +46,69 @@ namespace TemperatureEstimation
             Console.WriteLine($"The model is saved to {modelPath}");
         }
 
-        private static ITransformer DetectChangepoint(int size, IDataView dataView)
+        private static ITransformer DetectChangepoint(MLContext mlContext, int size, IDataView dataView)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("===============Detect Persistent changes in pattern===============");
+
+            var estimator = mlContext.Transforms.DetectIidChangePoint(outputColumnName: nameof(CityTempPrediction.),
+                                                                    inputColumnName: nameof(CityTempPrediction.),
+                                                                    confidence: 95,
+                                                                    changeHistoryLength: size / 4);
+
+            ITransformer transformedModel = estimator.Fit(CreateEmptyDataView(mlContext));
+
+            IDataView transformedData = transformedModel.Transform(dataView);
+            var predictions = mlContext.Data.CreateEnumerable<CityTempPrediction>(transformedData, reuseRowObject: false);
+
+            Console.WriteLine($"{nameof(CityTempPrediction.Prediction)} column obtained post-transformation.");
+            Console.WriteLine("Alert\tScore\tP-Value\tMarginale Value");
+
+            foreach (var p in predictions)
+            {
+                if (p.Prediction[0] == 1)
+                {
+                    Console.WriteLine("{0}\t{1:0.00}\t{2:0.00}\t{3:0.00}  <-- alert is on, predicted changepoint", p.Prediction[0], p.Prediction[1], p.Prediction[2], p.Prediction[3]);
+                }
+                else
+                {
+                    Console.WriteLine("{0}\t{1:0.00}\t{2:0.00}\t{3:0.00}", p.Prediction[0], p.Prediction[1], p.Prediction[2], p.Prediction[3]);
+                }
+            }
+            Console.WriteLine();
+
+            return transformedModel;
         }
 
-        private static ITransformer DetectSpike(int size, IDataView dataView)
+        private static ITransformer DetectSpike(MLContext mlContext, int size, IDataView dataView)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("===============Detect temporary changes in pattern===============");
+
+            var estimator = mlContext.Transforms.DetectIidSpike(outputColumnName: nameof(CityTempData.),
+                                                                inputColumnName: nameof(CityTempData.),
+                                                                confidence: 95,
+                                                                pvalueHistoryLength: size / 4);
+
+            ITransformer transformedModel = estimator.Fit(CreateEmptyDataView(mlContext));
+
+            IDataView transformedData = transformedModel.Transform(dataView);
+            var predictions = mlContext.Data.CreateEnumerable<CityTempPrediction>(transformedData, reuseRowObject: false);
+
+            Console.WriteLine("Alert\tScore\tP-Value");
+
+            foreach (var p in predictions)
+            {
+                if (p.Prediction[0] == 1)
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkYellow;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.WriteLine("{0}\t{1:0.00}\t{2:0.00}", p.Prediction[0], p.Prediction[1], p.Prediction[2]);
+                Console.ResetColor();
+            }
+
+            Console.WriteLine();
+
+            return transformedModel;
         }
 
         private static string GetAbsolutePath(string relativePath)
