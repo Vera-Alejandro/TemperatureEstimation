@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.ML.TimeSeries" Version="1.5.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="MLModels\" />
+  </ItemGroup>
+
 </Project>

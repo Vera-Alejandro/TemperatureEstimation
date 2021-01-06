@@ -65,8 +65,8 @@ namespace TemperatureEstimation
         {
             Console.WriteLine("===============Detect Persistent changes in pattern===============");
 
-            var estimator = mlContext.Transforms.DetectIidChangePoint(outputColumnName: nameof(CityTempPrediction.),
-                                                                    inputColumnName: nameof(CityTempPrediction.),
+            var estimator = mlContext.Transforms.DetectIidChangePoint(outputColumnName: nameof(CityTempPrediction.Prediction),
+                                                                    inputColumnName: nameof(CityTempData.AvgTemperature),
                                                                     confidence: 95,
                                                                     changeHistoryLength: size / 4);
 
@@ -98,8 +98,8 @@ namespace TemperatureEstimation
         {
             Console.WriteLine("===============Detect temporary changes in pattern===============");
 
-            var estimator = mlContext.Transforms.DetectIidSpike(outputColumnName: nameof(CityTempData.),
-                                                                inputColumnName: nameof(CityTempData.),
+            var estimator = mlContext.Transforms.DetectIidSpike(outputColumnName: nameof(CityTempPrediction.Prediction),
+                                                                inputColumnName: nameof(CityTempData.AvgTemperature),
                                                                 confidence: 95,
                                                                 pvalueHistoryLength: size / 4);
 
