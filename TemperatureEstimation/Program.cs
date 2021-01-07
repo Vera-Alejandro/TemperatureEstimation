@@ -11,9 +11,7 @@ namespace TemperatureEstimation
         private static string BaseDatasetPath = @"../../../Data";
         private static string BaseModelsRelativePath = @"../../../MLModels";
         private static string dataPath = GetAbsolutePath(BaseDatasetPath);
-        private static string modelPath = GetAbsolutePath(BaseModelsRelativePath);
-
-        private static string fullDatasetPath = Path.Combine(dataPath, "CityTemp", "Mexico", "MexicoCity.csv");
+        private static string fullDatasetPath = Path.Combine(dataPath, "CityTemp", "Mexico", "Mexico City.csv");
         private static string ModelRelativePath1 = $"{BaseModelsRelativePath}/SalesSpikeModel.zip";
         private static string ModelRelativePath2 = $"{BaseModelsRelativePath}/SalesChangePointModel.zip";
         private static string SpikeModelPath = GetAbsolutePath(ModelRelativePath1);
@@ -21,22 +19,26 @@ namespace TemperatureEstimation
 
         static void Main(string[] args)
         {
-            int size;
+            int size = 9230;
 
             MLContext mlContext = new MLContext();
 
             IDataView dataView = mlContext.Data.LoadFromTextFile<CityTempData>(path: fullDatasetPath, hasHeader: true, separatorChar: ',');
 
-            try { size = Convert.ToInt32(dataView.GetRowCount()); }
+            try { /*size = 9230;*/ }
             catch (OverflowException) { size = int.MaxValue; }
 
             ITransformer trainedSpikeModel = DetectSpike(mlContext, size, dataView);
 
-            ITransformer trainedChangePointModel = DetectChangepoint(mlContext, size, dataView);
+            SaveModel(mlContext, trainedSpikeModel, SpikeModelPath, dataView);
 
-            SaveModel(mlContext, trainedSpikeModel, ChangePointModelPath, dataView);
-            SaveModel(mlContext, trainedChangePointModel, ChangePointModelPath, dataView);
+            if (false)
+            {
+                ITransformer trainedChangePointModel = DetectChangepoint(mlContext, size, dataView);
 
+                SaveModel(mlContext, trainedChangePointModel, ChangePointModelPath, dataView);
+            }
+            
             Console.WriteLine("=============== End of process, hit any key to finish ===============");
             Console.ReadLine();
         }
@@ -95,6 +97,7 @@ namespace TemperatureEstimation
             ITransformer transformedModel = estimator.Fit(CreateEmptyDataView(mlContext));
 
             IDataView transformedData = transformedModel.Transform(dataView);
+
             var predictions = mlContext.Data.CreateEnumerable<CityTempPrediction>(transformedData, reuseRowObject: false);
 
             Console.WriteLine("Alert\tScore\tP-Value");
