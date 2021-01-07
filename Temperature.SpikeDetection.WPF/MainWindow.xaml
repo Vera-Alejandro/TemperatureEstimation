@@ -1,0 +1,49 @@
+﻿<Window x:Class="Temperature.SpikeDetection.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Temperature.SpikeDetection.WPF"
+        mc:Ignorable="d"
+        Title="Anomaly Detection" Height="450" Width="800">
+    <Grid>
+        <TextBlock Text="Anomaly Detection" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10" FontSize="20"/>
+        <TextBlock Text="Data File Path:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 50"/>
+
+        <TextBox Name="DataPathBox" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 70" Height="20" Width="230"/>
+        <Button x:Name="FindFile" Content="Find" Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="250 70 "/>
+
+        <StackPanel Margin="10 110" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <RadioButton>
+                <Grid>
+                <TextBlock Text="Comma Separated" HorizontalAlignment="Center"/>
+                </Grid>
+            </RadioButton>
+        </StackPanel>
+
+        <StackPanel Margin="10 140" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <RadioButton>
+                <Grid>
+                    <TextBlock Text="Tab Separated" HorizontalAlignment="Center"/>
+                </Grid>
+            </RadioButton>
+        </StackPanel>
+
+        <StackPanel Margin="150 110" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <CheckBox >
+                <TextBlock Text="Spike Detection" HorizontalAlignment="Center"/>
+            </CheckBox>
+        </StackPanel>
+        
+        <StackPanel Margin="150 140" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <CheckBox >
+                <TextBlock Text="Change Point Detection" HorizontalAlignment="Center"/>
+            </CheckBox>
+        </StackPanel>
+
+        <Button Content="Go" Height="20" Width="300" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 170"/>
+
+        <TextBlock Text="Data View Preview" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 50 50 50"/>
+
+    </Grid>
+</Window>

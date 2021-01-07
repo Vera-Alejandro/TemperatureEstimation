@@ -11,7 +11,6 @@ namespace TemperatureEstimation
         private static string BaseDatasetPath = @"../../../Data";
         private static string BaseModelsRelativePath = @"../../../MLModels";
         private static string dataPath = GetAbsolutePath(BaseDatasetPath);
-        private static string fullDatasetPath = Path.Combine(dataPath, "CityTemp", "Mexico", "Mexico City.csv");
         private static string ModelRelativePath1 = $"{BaseModelsRelativePath}/SalesSpikeModel.zip";
         private static string ModelRelativePath2 = $"{BaseModelsRelativePath}/SalesChangePointModel.zip";
         private static string SpikeModelPath = GetAbsolutePath(ModelRelativePath1);
@@ -19,14 +18,30 @@ namespace TemperatureEstimation
 
         static void Main(string[] args)
         {
-            int size = 9230;
+            int size;
+
+            Console.Write("What Country would you like?: ");
+            string Country = Console.ReadLine();
+
+            Console.Write("What City would you like?: ");
+            string City = Console.ReadLine();
+
+            string fullDatasetPath = Path.Combine(dataPath, "CityTemp", Country, $"{City}.csv");
+
+            Console.Write($"Enter the row count (cannot be larger than {int.MaxValue}): ");
+            try { size = Convert.ToInt32(Console.ReadLine()); }
+            catch (OverflowException) { Console.WriteLine("Convert Failed. Exiting Program."); return; }
+
+            if (!File.Exists(fullDatasetPath))
+            {
+                Console.WriteLine("File with City not found. Exiting Program ...");
+                return;
+            }
 
             MLContext mlContext = new MLContext();
 
             IDataView dataView = mlContext.Data.LoadFromTextFile<CityTempData>(path: fullDatasetPath, hasHeader: true, separatorChar: ',');
 
-            try { /*size = 9230;*/ }
-            catch (OverflowException) { size = int.MaxValue; }
 
             ITransformer trainedSpikeModel = DetectSpike(mlContext, size, dataView);
 
@@ -38,7 +53,7 @@ namespace TemperatureEstimation
 
                 SaveModel(mlContext, trainedChangePointModel, ChangePointModelPath, dataView);
             }
-            
+
             Console.WriteLine("=============== End of process, hit any key to finish ===============");
             Console.ReadLine();
         }
