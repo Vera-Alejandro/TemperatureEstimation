@@ -16,7 +16,7 @@
         <StackPanel Margin="10 110" VerticalAlignment="Top" HorizontalAlignment="Left">
             <RadioButton>
                 <Grid>
-                <TextBlock Text="Comma Separated" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Comma Separated" HorizontalAlignment="Center"/>
                 </Grid>
             </RadioButton>
         </StackPanel>
@@ -34,7 +34,7 @@
                 <TextBlock Text="Spike Detection" HorizontalAlignment="Center"/>
             </CheckBox>
         </StackPanel>
-        
+
         <StackPanel Margin="150 140" VerticalAlignment="Top" HorizontalAlignment="Left">
             <CheckBox >
                 <TextBlock Text="Change Point Detection" HorizontalAlignment="Center"/>
@@ -43,7 +43,7 @@
 
         <Button Content="Go" Height="20" Width="300" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 170"/>
 
-        <TextBlock Text="Data View Preview" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 50 50 50"/>
+        <TextBlock Text="Data View Preview" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,280,0,0"/>
 
     </Grid>
 </Window>
