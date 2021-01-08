@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:Temperature.SpikeDetection.WPF"
         mc:Ignorable="d"
-        Title="Anomaly Detection" Height="450" Width="800">
+        Title="Anomaly Detection" Height="650" Width="750">
     <Grid>
         <TextBlock Text="Anomaly Detection" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10" FontSize="20"/>
         <TextBlock Text="Data File Path:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 50"/>
@@ -43,7 +44,26 @@
 
         <Button Content="Go" Height="20" Width="300" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 170"/>
 
-        <TextBlock Text="Data View Preview" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,280,0,0"/>
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,200,0,0">
+            <TextBlock Text="Data View Preview" />
+            <DataGrid x:Name="DataPreview" Margin="0,20,0,0" Height="380" Width="300" />
+        </Grid>
 
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,70,20,0">
+            <TextBlock Text="Anomalies Detected:" />
+            <RichTextBox Height="100" Width="380" Margin="0,20,0,0"/>
+        </Grid>
+
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,200,20,0">
+            <TextBlock Text="Graph"/>
+            <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="380" Width="380" Margin="0,20,0,0">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Title="X-Axis" LabelFormatter="{Binding YFormatter}"/>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="Y-Axis" LabelFormatter="{Binding Labels}"/>
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+        </Grid>
     </Grid>
 </Window>
