@@ -12,37 +12,26 @@
         <TextBlock Text="Data File Path:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 50"/>
 
         <TextBox Name="DataPathBox" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 70" Height="20" Width="230"/>
-        <Button x:Name="FindFile" Content="Find" Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="250 70 "/>
+        <Button x:Name="FindFileButton" Content="Find" Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="250 70 " Click="FindFileButton_Click"/>
+        
 
         <StackPanel Margin="10 110" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <RadioButton>
-                <Grid>
-                    <TextBlock Text="Comma Separated" HorizontalAlignment="Center"/>
-                </Grid>
-            </RadioButton>
+            <RadioButton x:Name="csvRadio">Comma Separated</RadioButton>
         </StackPanel>
 
         <StackPanel Margin="10 140" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <RadioButton>
-                <Grid>
-                    <TextBlock Text="Tab Separated" HorizontalAlignment="Center"/>
-                </Grid>
-            </RadioButton>
+            <RadioButton x:Name="tsvRadio">Tab Separated</RadioButton>
         </StackPanel>
 
         <StackPanel Margin="150 110" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <CheckBox >
-                <TextBlock Text="Spike Detection" HorizontalAlignment="Center"/>
-            </CheckBox>
+            <CheckBox x:Name="SpikeCheckBox">Spike Detection</CheckBox>
         </StackPanel>
 
         <StackPanel Margin="150 140" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <CheckBox >
-                <TextBlock Text="Change Point Detection" HorizontalAlignment="Center"/>
-            </CheckBox>
+            <CheckBox x:Name="ChangePointCheckBox">Change Point Detection</CheckBox>
         </StackPanel>
 
-        <Button Content="Go" Height="20" Width="300" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 170"/>
+        <Button x:Name="DetectAnomalyButton" Content="Go" Height="20" Width="300" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 170" Click="DetectAnomalyButton_Click"/>
 
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,200,0,0">
             <TextBlock Text="Data View Preview" />
@@ -51,9 +40,9 @@
 
         <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,70,20,0">
             <TextBlock Text="Anomalies Detected:" />
-            <RichTextBox Height="100" Width="380" Margin="0,20,0,0"/>
+            <TextBox x:Name="AnamolyText"  Height="100" Width="380" Margin="0,20,0,0"/>
         </Grid>
-
+        
         <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,200,20,0">
             <TextBlock Text="Graph"/>
             <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="380" Width="380" Margin="0,20,0,0">
